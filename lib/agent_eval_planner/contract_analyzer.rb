@@ -13,7 +13,8 @@ module AgentEvalPlanner
     /ix
 
     TOOLS_INLINE_RE = /tools?\s*[:=]\s*\[([^\]]+)\]/i
-    NAME_RE = /(?:agent(?:\s+name)?|specialist|target[_ ]?agent)\s*[:=]\s*["']?([A-Za-z0-9_\-./]+)["']?/i
+    # Use %r so a literal "/" inside the character class does not terminate the regexp.
+    NAME_RE = %r{(?:agent(?:\s+name)?|specialist|target[_ ]?agent)\s*[:=]\s*["']?([A-Za-z0-9_\-./]+)["']?}i
 
     attr_reader :source_path, :raw, :agent_name, :tools, :declared_scope, :out_of_scope,
                 :harness, :signals
