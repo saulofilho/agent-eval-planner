@@ -1,35 +1,23 @@
 (function () {
   "use strict";
 
-  const header = document.querySelector(".header");
   const toggle = document.querySelector(".nav__toggle");
   const navLinks = document.querySelector(".nav__links");
 
-  // Header scroll state
-  function onScroll() {
-    header.classList.toggle("header--scrolled", window.scrollY > 20);
-  }
-  window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
-
-  // Mobile menu
   if (toggle && navLinks) {
     toggle.addEventListener("click", () => {
-      const open = toggle.classList.toggle("nav__toggle--open");
-      navLinks.classList.toggle("nav__links--open", open);
+      const open = navLinks.classList.toggle("open");
       toggle.setAttribute("aria-expanded", String(open));
     });
 
     navLinks.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", () => {
-        toggle.classList.remove("nav__toggle--open");
-        navLinks.classList.remove("nav__links--open");
+        navLinks.classList.remove("open");
         toggle.setAttribute("aria-expanded", "false");
       });
     });
   }
 
-  // Scroll reveal
   const reveals = document.querySelectorAll(".reveal");
   const observer = new IntersectionObserver(
     (entries) => {
@@ -44,24 +32,22 @@
   );
   reveals.forEach((el) => observer.observe(el));
 
-  // Copy to clipboard
   document.querySelectorAll(".copy-btn").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const text = btn.dataset.copy;
       if (!text) return;
-
       try {
         await navigator.clipboard.writeText(text);
         const original = btn.textContent;
-        btn.textContent = "Copied!";
+        btn.textContent = "Copied";
         btn.classList.add("copied");
         setTimeout(() => {
           btn.textContent = original;
           btn.classList.remove("copied");
-        }, 2000);
+        }, 1600);
       } catch {
         btn.textContent = "Error";
-        setTimeout(() => { btn.textContent = "Copy"; }, 2000);
+        setTimeout(() => { btn.textContent = "Copy"; }, 1600);
       }
     });
   });
