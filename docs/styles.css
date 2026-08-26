@@ -280,6 +280,47 @@ main,
 .panel__body .key { color: var(--cool); }
 .panel__body .muted { color: var(--dim); }
 
+.panel__link {
+  margin-left: auto;
+  color: var(--phosphor);
+  font-size: 0.7rem;
+}
+.panel__link:hover { text-decoration: underline; }
+
+/* Evidence */
+.evidence { display: grid; gap: 1rem; }
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.tab {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--line);
+  background: var(--bg-elevated);
+  color: var(--muted);
+  cursor: pointer;
+}
+.tab:hover { color: var(--text); border-color: var(--line-strong); }
+.tab.is-active {
+  color: #04110a;
+  background: var(--phosphor);
+  border-color: var(--phosphor);
+}
+.tab-panel[hidden] { display: none !important; }
+.evidence__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+}
+.evidence__links a { color: var(--phosphor); border-bottom: 1px solid rgba(61, 255, 154, 0.35); }
+.evidence__links a:hover { border-bottom-color: var(--phosphor); }
+
 /* Sections */
 .section { padding: 4rem 0; }
 .section--band {
