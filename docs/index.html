@@ -46,7 +46,7 @@
           If your agent answers a carrot-cake recipe, scope is not limited.
           This gem turns that insight into a deterministic eval pipeline —
           vectors, a suite your harness can load, and remediations.
-          <code>--harness rd-copilot</code> emits the native row.
+          <code>--harness native</code> emits the native row.
         </p>
         <div class="hero__actions">
           <a class="btn btn--primary" href="#install">Install the gem</a>
@@ -56,7 +56,7 @@
           <span class="chip chip--ok">v0.2.0</span>
           <span class="chip">MIT</span>
           <span class="chip">Ruby 3.0+</span>
-          <span class="chip chip--hot">harness: rd-copilot</span>
+          <span class="chip chip--hot">harness: native</span>
         </div>
       </div>
 
@@ -65,10 +65,10 @@
           <span class="panel__dot"></span>
           <span class="panel__dot"></span>
           <span class="panel__dot"></span>
-          <span>suite.jsonl · rd-copilot · SCOPE-01</span>
+          <span>suite.jsonl · native · SCOPE-01</span>
         </div>
         <pre class="panel__body"><code><span class="muted">{</span>
-  <span class="key">"target_component"</span>: <span class="ok">"default"</span>,
+  <span class="key">"target_component"</span>: <span class="ok">"analytics"</span>,
   <span class="key">"suite"</span>: <span class="ok">"regression"</span>,
   <span class="key">"turns"</span>: [{
     <span class="key">"sequence"</span>: <span class="ok">0</span>,
@@ -124,7 +124,7 @@
           <article class="pipe pipe--focus reveal reveal--delay">
             <p class="pipe__id">02 · SUITE</p>
             <h3>suite.jsonl</h3>
-            <p>Executable cases. Legacy rows, or the rd-copilot native envelope.</p>
+            <p>Executable cases. Legacy rows, or the native envelope.</p>
             <ul>
               <li><code>target_component</code>, <code>turns</code>, <code>suite=regression</code></li>
               <li><code>metadata.vector_id</code> links SCOPE-01</li>
@@ -151,7 +151,7 @@
         <h2>From contract to validated suite</h2>
         <p>
           Real output from the gem against the sample analytics contract
-          (13 vectors · smoke pack included). <code>--harness rd-copilot</code> writes the native row;
+          (13 vectors · smoke pack included). <code>--harness native</code> writes the native row;
           <code>generic</code> and <code>marketing-copilot</code> keep the legacy shape. Full artifacts in
           <a href="https://github.com/saulofilho/agent-eval-planner/tree/main/docs/examples" target="_blank" rel="noopener"><code>docs/examples/</code></a>.
         </p>
@@ -163,7 +163,7 @@
           <button class="tab" type="button" data-tab="cli" role="tab" aria-selected="false">2 · CLI</button>
           <button class="tab" type="button" data-tab="plan" role="tab" aria-selected="false">3 · Plan</button>
           <button class="tab" type="button" data-tab="suite" role="tab" aria-selected="false">4 · Legacy</button>
-          <button class="tab" type="button" data-tab="native" role="tab" aria-selected="false">5 · rd-copilot</button>
+          <button class="tab" type="button" data-tab="native" role="tab" aria-selected="false">5 · native</button>
           <button class="tab" type="button" data-tab="validate" role="tab" aria-selected="false">6 · Validate</button>
         </div>
 
@@ -194,7 +194,7 @@ General chat, recipes, coding…</code></pre>
                 <span>terminal</span>
               </div>
               <pre class="panel__body"><code><span class="muted">$</span> agent-eval-planner agent.md \
-    --harness rd-copilot -a default \
+    --harness native -a analytics \
     --tools funnel_analytics,open_service_center_ticket \
     -t "Platform Team" -o ./out
 
@@ -256,12 +256,12 @@ General chat, recipes, coding…</code></pre>
             <div class="panel">
               <div class="panel__bar">
                 <span class="panel__dot"></span><span class="panel__dot"></span><span class="panel__dot"></span>
-                <span>suite.jsonl · rd-copilot · SCOPE-01</span>
+                <span>suite.jsonl · native · SCOPE-01</span>
                 <a class="panel__link" href="examples/sample-scope-01-native.json" target="_blank" rel="noopener">pretty JSON</a>
               </div>
               <pre class="panel__body"><code>{
   <span class="key">"id"</span>: <span class="ok">"guardrail-scope-01-dd352377"</span>,
-  <span class="key">"target_component"</span>: <span class="ok">"default"</span>,
+  <span class="key">"target_component"</span>: <span class="ok">"analytics"</span>,
   <span class="key">"suite"</span>: <span class="ok">"regression"</span>,
   <span class="key">"turns"</span>: [{
     <span class="key">"sequence"</span>: <span class="ok">0</span>,
@@ -292,7 +292,7 @@ General chat, recipes, coding…</code></pre>
     --schema native \
     --bound-tools funnel_analytics \
     --known-tools funnel_analytics,docs_search \
-    --target-components default,docs_support,orchestrator
+    --target-components analytics
 
 <span class="ok">OK: ./out/suite.jsonl</span>
 
@@ -429,17 +429,17 @@ General chat, recipes, coding…</code></pre>
           </div>
           <div class="cmd">
             <div class="cmd__head">
-              <span>rd-copilot</span>
-              <button class="copy-btn" type="button" data-copy="agent-eval-planner agent.md --harness rd-copilot -a default --tools funnel_analytics,open_service_center_ticket -o ./out">Copy</button>
+              <span>native</span>
+              <button class="copy-btn" type="button" data-copy="agent-eval-planner agent.md --harness native -a analytics --tools funnel_analytics,open_service_center_ticket -o ./out">Copy</button>
             </div>
-            <code>agent-eval-planner agent.md --harness rd-copilot -a default --tools funnel_analytics,open_service_center_ticket -o ./out</code>
+            <code>agent-eval-planner agent.md --harness native -a analytics --tools funnel_analytics,open_service_center_ticket -o ./out</code>
           </div>
           <div class="cmd">
             <div class="cmd__head">
               <span>validate</span>
-              <button class="copy-btn" type="button" data-copy="agent-eval-planner validate ./out/suite.jsonl --schema native --bound-tools funnel_analytics --known-tools funnel_analytics,open_service_center_ticket --target-components default">Copy</button>
+              <button class="copy-btn" type="button" data-copy="agent-eval-planner validate ./out/suite.jsonl --schema native --bound-tools funnel_analytics --known-tools funnel_analytics,open_service_center_ticket --target-components analytics">Copy</button>
             </div>
-            <code>agent-eval-planner validate ./out/suite.jsonl --schema native --bound-tools funnel_analytics --known-tools funnel_analytics,open_service_center_ticket --target-components default</code>
+            <code>agent-eval-planner validate ./out/suite.jsonl --schema native --bound-tools funnel_analytics --known-tools funnel_analytics,open_service_center_ticket --target-components analytics</code>
           </div>
         </div>
       </div>

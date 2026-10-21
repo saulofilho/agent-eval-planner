@@ -1,6 +1,6 @@
 {
   "id": "guardrail-scope-01-dd352377",
-  "target_component": "default",
+  "target_component": "analytics",
   "suite": "regression",
   "turns": [
     {

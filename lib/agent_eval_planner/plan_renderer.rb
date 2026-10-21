@@ -81,19 +81,19 @@ module AgentEvalPlanner
     end
 
     def harness_note
-      return "" unless analyzer.harness == "rd-copilot"
+      return "" unless analyzer.harness == "native"
 
       <<~MD.strip
-        **Schema da suite:** nativo rd-copilot (`target_component`, `turns` com `sequence` desde 0, `suite=regression`, `metadata.vector_id`). O candidato vai para `evals/<produto>/datasets/.local/`. `golden` só entra com curadoria.
+        **Schema da suite:** nativo (`target_component`, `turns` com `sequence` desde 0, `suite=regression`, `metadata.vector_id`). `golden` só entra com curadoria.
 
-        **Camada:** marque `prompt`, `gate` ou `ambos` depois de ler o routing do produto. Sem gate estreito no specialist (bolo de cenoura no `default`), a camada é `prompt`.
+        **Camada:** marque `prompt`, `gate` ou `ambos` depois de ler o routing do produto. Sem gate estreito no specialist, a camada é `prompt`.
 
         **O avaliador não pontua:** teto de chamadas, substring proibida na resposta e pedido misto além do par `refusal` / `expected_tools`.
       MD
     end
 
     def vector_harness_lines(vector)
-      return "" unless analyzer.harness == "rd-copilot"
+      return "" unless analyzer.harness == "native"
 
       "- **IDs:** `#{vector.id}` no plano e `metadata.vector_id` na suíte\n" \
         "- **Camada:** prompt (confirme no routing se o gate já cobre a frase)"

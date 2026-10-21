@@ -4,7 +4,7 @@
 
 ### Added
 
-- `--harness rd-copilot` emits the native row (`target_component`, `turns`, `suite=regression`, `metadata.vector_id`) that the rd-copilot harness loads
+- `--harness native` emits the native row (`target_component`, `turns`, `suite=regression`, `metadata.vector_id`)
 - Suite validator accepts that native shape and the legacy marketing-copilot row in the same gate: `--bound-tools`, `--schema`, `--target-components`, and warnings when `forbidden_tools` names a catalog tool the target cannot call
 
 ## [0.1.0] - 2026-08-26

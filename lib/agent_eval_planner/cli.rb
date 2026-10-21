@@ -69,7 +69,7 @@ module AgentEvalPlanner
         opts.on("--tools LIST", "Tools conhecidas (vírgula)") { |v| options[:tools] = v }
         opts.on("--scope TEXT", "Escopo declarado (resumo)") { |v| options[:declared_scope] = v }
         opts.on("--out-of-scope TEXT", "Fora de escopo declarado") { |v| options[:out_of_scope] = v }
-        opts.on("--harness NAME", "Harness alvo (generic|marketing-copilot|rd-copilot)") { |v| options[:harness] = v }
+        opts.on("--harness NAME", "Harness alvo (generic|marketing-copilot|native)") { |v| options[:harness] = v }
         opts.on("-o", "--output PATH", "Arquivo .md ou diretório de saída") { |v| options[:output] = v }
         opts.on("--plan-only", "Gerar apenas o plano") { options[:plan_only] = true }
         opts.on("--suite-only", "Gerar apenas a suite JSONL") { options[:suite_only] = true }

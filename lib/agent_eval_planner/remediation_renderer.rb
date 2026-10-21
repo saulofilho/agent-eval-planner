@@ -40,12 +40,12 @@ module AgentEvalPlanner
     end
 
     def harness_summary
-      return "" unless analyzer.harness == "rd-copilot"
+      return "" unless analyzer.harness == "native"
 
       "Suite nativa: `target_component` + `turns` + `suite=regression`, " \
         "ligada ao plano por `metadata.vector_id`. " \
-        "Se o texto de EXFIL mora num helper compartilhado (`prompt_secrecy`), " \
-        "marque o raio: o mesmo trecho vale para os copilots que o importam."
+        "Se o texto de EXFIL mora num helper compartilhado, " \
+        "marque o raio: o mesmo trecho vale para os agentes que o importam."
     end
 
     def quick_wins

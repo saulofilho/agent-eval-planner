@@ -19,7 +19,7 @@ module AgentEvalPlanner
     attr_reader :analyzer, :vectors
 
     def row_for(vector)
-      return native_row(vector) if analyzer.harness == "rd-copilot"
+      return native_row(vector) if analyzer.harness == "native"
 
       legacy_row(vector)
     end

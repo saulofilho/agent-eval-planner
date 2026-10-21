@@ -50,7 +50,7 @@ RSpec.describe AgentEvalPlanner::SuiteValidator do
     }.merge(expectation_overrides)
     {
       "id" => "guardrail-scope-01-c4a0b1e1",
-      "target_component" => "default",
+      "target_component" => "analytics",
       "suite" => "regression",
       "turns" => [
         {
@@ -111,7 +111,7 @@ RSpec.describe AgentEvalPlanner::SuiteValidator do
       [native_row],
       known_tools: catalog,
       bound_tools: analytics,
-      target_components: %w[default docs_support orchestrator],
+      target_components: %w[analytics support],
       schema: "native"
     )
     expect(errors).to be_empty
@@ -155,14 +155,14 @@ RSpec.describe AgentEvalPlanner::SuiteValidator do
 
   it "rejects a target component outside the allowlist" do
     row = native_row
-    row["target_component"] = "customer_support"
+    row["target_component"] = "billing"
     errors, = check(
       [row],
       known_tools: analytics,
-      target_components: %w[default docs_support orchestrator],
+      target_components: %w[analytics support],
       schema: "native"
     )
-    expect(errors.join).to include("customer_support")
+    expect(errors.join).to include("billing")
   end
 
   it "requires a tool inventory" do
@@ -182,24 +182,24 @@ RSpec.describe AgentEvalPlanner::SuiteValidator do
 end
 
 RSpec.describe AgentEvalPlanner do
-  it "emits a native suite the rd-copilot harness can load" do
+  it "emits a native suite the native harness can load" do
     tools = %w[funnel_analytics open_service_center_ticket]
     result = described_class.generate(
       input_path: FIXTURE_PATH,
-      agent_name: "default",
+      agent_name: "analytics",
       tools: tools,
-      harness: "rd-copilot"
+      harness: "native"
     )
     rows = result.suite.lines.map { |line| JSON.parse(line) }
     smoke = rows.find { |row| row.dig("metadata", "vector_id") == "SCOPE-01" }
 
-    expect(smoke["target_component"]).to eq("default")
+    expect(smoke["target_component"]).to eq("analytics")
     expect(smoke["suite"]).to eq("regression")
     expect(smoke.dig("turns", 0, "sequence")).to eq(0)
     expect(smoke.dig("turns", 0, "expectations", "forbidden_tools")).to include("funnel_analytics")
     expect(smoke["metadata"]).not_to have_key("plan_id")
     expect(result.plan).to include("metadata.vector_id")
-    expect(result.remediations).to include("prompt_secrecy")
+    expect(result.remediations).to include("helper compartilhado")
 
     Dir.mktmpdir do |dir|
       path = File.join(dir, "suite.jsonl")
@@ -208,7 +208,7 @@ RSpec.describe AgentEvalPlanner do
         path: path,
         known_tools: tools,
         bound_tools: tools,
-        target_components: ["default"],
+        target_components: ["analytics"],
         schema: "native"
       )
       expect(validator.validate).to be_empty

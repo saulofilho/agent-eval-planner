@@ -4,7 +4,7 @@ require "json"
 require "set"
 
 module AgentEvalPlanner
-  # Hard-fail validator for legacy marketing-copilot rows and native rd-copilot rows.
+  # Hard-fail validator for legacy rows and native rows.
   class SuiteValidator
     PLACEHOLDER_RE = /\{\{[^{}]+\}\}/
     ID_RE = /\A[A-Za-z0-9][A-Za-z0-9._:-]*\z/
@@ -178,7 +178,7 @@ module AgentEvalPlanner
       errors = []
       unless ID_RE.match?(row_id_str)
         errors << "line #{line_no}: id #{row_id.inspect} must match " \
-                  "[A-Za-z0-9][A-Za-z0-9._:-]* (EvalCase stable id)"
+                  "[A-Za-z0-9][A-Za-z0-9._:-]* (stable id)"
       end
       errors << "line #{line_no}: duplicate id #{row_id.inspect}" if seen_ids[row_id_str]
       seen_ids[row_id_str] = true
@@ -396,7 +396,7 @@ module AgentEvalPlanner
       names = seen_schemas.to_a.sort.join(", ")
       [
         "mixed suite schemas in one file: #{names}. " \
-        "Split legacy marketing-copilot rows from rd-copilot rows."
+        "Split legacy rows from native rows."
       ]
     end
   end
