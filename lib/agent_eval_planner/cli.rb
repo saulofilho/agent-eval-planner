@@ -69,7 +69,7 @@ module AgentEvalPlanner
         opts.on("--tools LIST", "Tools conhecidas (vírgula)") { |v| options[:tools] = v }
         opts.on("--scope TEXT", "Escopo declarado (resumo)") { |v| options[:declared_scope] = v }
         opts.on("--out-of-scope TEXT", "Fora de escopo declarado") { |v| options[:out_of_scope] = v }
-        opts.on("--harness NAME", "Harness alvo (generic|marketing-copilot)") { |v| options[:harness] = v }
+        opts.on("--harness NAME", "Harness alvo (generic|marketing-copilot|rd-copilot)") { |v| options[:harness] = v }
         opts.on("-o", "--output PATH", "Arquivo .md ou diretório de saída") { |v| options[:output] = v }
         opts.on("--plan-only", "Gerar apenas o plano") { options[:plan_only] = true }
         opts.on("--suite-only", "Gerar apenas a suite JSONL") { options[:suite_only] = true }
@@ -156,13 +156,28 @@ module AgentEvalPlanner
     end
 
     def run_validate(argv)
-      options = { known_tools: [], agent_has_no_tools: false }
+      options = {
+        known_tools: [],
+        bound_tools: [],
+        agent_has_no_tools: false,
+        target_components: [],
+        suites: [],
+        schema: "auto"
+      }
       parser = OptionParser.new do |opts|
         opts.banner = "Usage: agent-eval-planner validate [options] <suite.jsonl>\n\n"
-        opts.on("--known-tools LIST", "Tools reais (vírgula)") do |v|
-          options[:known_tools] = v.split(",").map(&:strip).reject(&:empty?)
+        opts.on("--known-tools LIST", "Catálogo do produto (vírgula)") do |v|
+          options[:known_tools] = split_csv(v)
+        end
+        opts.on("--bound-tools LIST", "Tools ligadas a este alvo (vírgula)") do |v|
+          options[:bound_tools] = split_csv(v)
         end
         opts.on("--agent-has-no-tools", "Agente sem tools") { options[:agent_has_no_tools] = true }
+        opts.on("--target-components LIST", "target_component ou target_agent aceitos") do |v|
+          options[:target_components] = split_csv(v)
+        end
+        opts.on("--suites LIST", "Valores nativos de suite") { |v| options[:suites] = split_csv(v) }
+        opts.on("--schema NAME", "auto, legacy ou native") { |v| options[:schema] = v }
         opts.on("-h", "--help", "Ajuda") do
           puts opts
           exit
@@ -172,22 +187,36 @@ module AgentEvalPlanner
       suite = argv.first
       abort parser.help if suite.nil?
 
-      errors = SuiteValidator.new(
+      validator = SuiteValidator.new(
         path: suite,
         known_tools: options[:known_tools],
-        agent_has_no_tools: options[:agent_has_no_tools]
-      ).validate
+        bound_tools: options[:bound_tools],
+        agent_has_no_tools: options[:agent_has_no_tools],
+        target_components: options[:target_components],
+        suites: options[:suites],
+        schema: options[:schema]
+      )
+      errors = validator.validate
 
+      validator.warnings.each { |warning| warn warning }
       if errors.any?
         warn "INVALID: #{suite} (#{errors.size} error(s))"
         errors.each { |e| warn "  - #{e}" }
         exit 1
       end
 
-      puts "OK: #{suite}"
+      if validator.warnings.any?
+        puts "OK WITH WARNINGS: #{suite} (#{validator.warnings.size} warning(s))"
+      else
+        puts "OK: #{suite}"
+      end
     rescue Error => e
       warn "Erro: #{e.message}"
       exit 1
+    end
+
+    def split_csv(value)
+      value.to_s.split(",").map(&:strip).reject(&:empty?)
     end
   end
 end

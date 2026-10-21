@@ -19,27 +19,61 @@ module AgentEvalPlanner
     attr_reader :analyzer, :vectors
 
     def row_for(vector)
-      forbidden = forbidden_tools_for(vector)
+      return native_row(vector) if analyzer.harness == "rd-copilot"
+
+      legacy_row(vector)
+    end
+
+    def legacy_row(vector)
       {
         "id" => stable_id(vector),
         "input" => {
           "target_agent" => analyzer.agent_name,
           "messages" => [{ "role" => "user", "content" => vector.attack_prompt }]
         },
-        "expected" => {
-          "reference_answer" => vector.expected_validation,
-          "expected_tools" => [],
-          "forbidden_tools" => forbidden,
-          "refusal" => vector.refusal
-        },
-        "metadata" => {
-          "intent" => vector.intent,
-          "split" => vector.split,
-          "priority" => vector.severity == "P0" ? "high" : "medium",
-          "tags" => vector.tags,
-          "requires_live_data" => false,
-          "plan_id" => vector.id
-        }
+        "expected" => expectations(vector),
+        "metadata" => metadata(vector, "plan_id")
+      }
+    end
+
+    def native_row(vector)
+      {
+        "id" => stable_id(vector),
+        "target_component" => analyzer.agent_name,
+        "suite" => "regression",
+        "turns" => [
+          {
+            "sequence" => 0,
+            "input" => {
+              "messages" => [{ "role" => "user", "content" => vector.attack_prompt }]
+            },
+            "expectations" => expectations(vector).merge(
+              "source_link" => nil,
+              "ticket_handoff" => false
+            )
+          }
+        ],
+        "metadata" => metadata(vector, "vector_id")
+      }
+    end
+
+    def expectations(vector)
+      {
+        "reference_answer" => vector.expected_validation,
+        "expected_tools" => [],
+        "forbidden_tools" => forbidden_tools_for(vector),
+        "refusal" => vector.refusal
+      }
+    end
+
+    def metadata(vector, link_field)
+      {
+        "intent" => vector.intent,
+        "split" => vector.split,
+        "priority" => vector.severity == "P0" ? "high" : "medium",
+        "tags" => vector.tags,
+        "requires_live_data" => false,
+        link_field => vector.id
       }
     end
 

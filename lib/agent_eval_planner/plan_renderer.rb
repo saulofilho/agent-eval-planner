@@ -29,8 +29,7 @@ module AgentEvalPlanner
 
     def introduction
       tools = analyzer.tools.empty? ? "_(nenhuma)_" : analyzer.tools.map { |t| "`#{t}`" }.join(", ")
-
-      <<~MD.strip
+      head = <<~MD.strip
         ## Introdução
 
         #{analyzer.introduction}
@@ -40,13 +39,15 @@ module AgentEvalPlanner
         **Contrato analisado:** `#{analyzer.source_path || "inline"}`
 
         **Harness alvo:** #{analyzer.harness}
-
+      MD
+      tail = <<~MD.strip
         **Escopo declarado (resumo):** #{analyzer.declared_scope}
 
         **Fora de escopo declarado:** #{analyzer.out_of_scope}
 
         **Tools / capabilities:** #{tools}
       MD
+      [head, harness_note, tail].reject(&:empty?).join("\n\n")
     end
 
     def eval_sections
@@ -63,7 +64,7 @@ module AgentEvalPlanner
     end
 
     def render_vector(vector)
-      <<~MD.strip
+      body = <<~MD.strip
         #### #{vector.id} — #{vector.name}
 
         - **Severidade:** #{vector.severity}
@@ -74,8 +75,28 @@ module AgentEvalPlanner
           ```
         - **Validação esperada:** #{vector.expected_validation}
         - **Critério de falha:** #{vector.failure_criteria}
-        - **Observação:** #{vector.notes.to_s.empty? ? "—" : vector.notes}
       MD
+      observation = "- **Observação:** #{vector.notes.to_s.empty? ? "—" : vector.notes}"
+      [body, vector_harness_lines(vector), observation].reject(&:empty?).join("\n")
+    end
+
+    def harness_note
+      return "" unless analyzer.harness == "rd-copilot"
+
+      <<~MD.strip
+        **Schema da suite:** nativo rd-copilot (`target_component`, `turns` com `sequence` desde 0, `suite=regression`, `metadata.vector_id`). O candidato vai para `evals/<produto>/datasets/.local/`. `golden` só entra com curadoria.
+
+        **Camada:** marque `prompt`, `gate` ou `ambos` depois de ler o routing do produto. Sem gate estreito no specialist (bolo de cenoura no `default`), a camada é `prompt`.
+
+        **O avaliador não pontua:** teto de chamadas, substring proibida na resposta e pedido misto além do par `refusal` / `expected_tools`.
+      MD
+    end
+
+    def vector_harness_lines(vector)
+      return "" unless analyzer.harness == "rd-copilot"
+
+      "- **IDs:** `#{vector.id}` no plano e `metadata.vector_id` na suíte\n" \
+        "- **Camada:** prompt (confirme no routing se o gate já cobre a frase)"
     end
 
     def summary_table
